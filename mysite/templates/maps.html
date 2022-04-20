@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Google Maps</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js" integrity="sha512-n/4gHW3atM3QqRcbCn6ewmpxcLAHGaDjpEBu4xZd47N0W2oQ+6q7oc3PXstrJYXcbNU1OHdQ1T7pAP+gi5Yu8g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+
+body {font-family: "Lato", sans-serif;}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+.main {
+  margin-left: 160px; /* Same as the width of the sidenav */
+  padding: 0px 10px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidebar {padding-top: 15px;}
+  .sidebar a {font-size: 18px;}
+}
+
+.dropbtn {
+  background-color: #3498DB;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #2980B9;
+}
+
+.dropdown1 {
+  margin-left : 30%;
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown {
+  margin-left : 5%;
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown a:hover {background-color: #ddd;}
+
+.show {display: block;}
+
+#myChart1 { float: left;
+  display: inline-block;}
+
+.radioButton{
+    float:right;
+    margin-right : 8%;
+    padding: 12px 16px;
+    text-align: center;
+}
+
+#detailed_analysis{
+    margin-top: 33%;
+    margin-left : 100%;
+  position: relative;
+  display: inline-block;
+}
+
+#submit_analysis_button{
+    margin-top: 4%;
+    margin-right : 35%;
+    float:right;
+  position: relative;
+}
+
+.right {
+  width:500px;
+  border: 3px solid grey;
+  padding: 10px;
+  margin-top: 10%;
+  box-shadow: 5px 10px 10px 10px #888888;
+}
+
+body  {
+  background-color: GhostWhite;
+}
+
+#myChart5 {
+    float:left;
+    width:50%;
+}
+#myChart6 {
+float:left;
+    width:50%;
+}
+#myChart7 {
+float:left;
+    width:50%;
+}
+
+
+
+#right1 {
+    float:right;
+    margin-bottom:20%;
+
+}
+
+#right2 {
+    float:right;
+    margin-bottom:20%;
+    margin-top: 1%;
+}
+
+#right3 {
+    float:right;
+    margin-bottom:30%;
+    margin-top: 1%;
+}
+
+#map{
+    height:500px;
+    width:100%;
+}
+
+.dropdown_3{
+margin-top: 0%;
+margin-left : 20%;
+
+  display: inline-block;
+}
+
+.checkBoxButton {
+    margin-left: 3%;
+}
+
+.checkBoxButton:hover input ~ .checkmark {
+  background-color: grey;
+}
+
+.checkBoxButton input:checked ~ .checkmark {
+  background-color: blue;
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+<ul>
+  <li><a class="active" href="#home">Home</a></li>
+  <li><a href="about_covid">About</a></li>
+</ul>
+
+<h1 style="text-align: center; font-size:50px; margin-top:7%; margin-bottom:3%; font-family: Tahoma, Trebuchet MS, sans-serif;">Covid-19 Dashboard for Europe</h1>
+
+<div id="map"></div>
+<!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+<script  async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIQrEwXmSC5Hzp6gdE71RJzyQ_C3P_D_8&callback=initMap" ></script>
+
+<script>
+
+
+
+function initMap() {
+  var options  = {
+    zoom: 4,
+    center: {lat:54.9000,lng:25.3167},
+  }
+
+  var map = new google.maps.Map(document.getElementById('map'),options);
+
+
+function addMarker(country, props){
+  var marker = new google.maps.Marker({
+    position:props.coords,
+    map:map,
+  });
+
+  var infoWindow = new google.maps.InfoWindow({
+    content:'<h5>'+country+'</h5><br><p><b>Total Cases: '+props.total_cases +'</b></p><p><b>Total Deaths: '+props.total_deaths +'</b></p>'
+  });
+
+  marker.addListener('click', function(){
+    infoWindow.open(map, marker);
+  });
+
+  }
+
+  var getJSON = function(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      if (status === 200) {
+        callback(null, xhr.response);
+      } else {
+        callback(status, xhr.response);
+      }
+    };
+    xhr.send();
+};
+
+getJSON('/countries_map_data',
+function(err, data){
+    addallMarker(data)
+});
+
+function addallMarker(data){
+keys=Object.keys(data)
+for (i=0;i<51;i++){
+    addMarker(keys[i], data[keys[i]])
+
+    }
+}
+
+ }
+
+</script>
+
+<div style="margin-top : 5% ; text-align:center; background-color: lightblue; font-family: Tahoma, Trebuchet MS, sans-serif;" >
+<h2>Trends to compare between countries</h2>
+<p>Click on the button to open the list of countries to compare</p>
+</div>
+
+<div class="dropdown1">
+  <select id="country1">
+      <option value="">Select country</option>
+  </select>
+</div>
+<div class="dropdown">
+  <select id="country2">
+      <option value="">Select country</option>
+  </select>
+</div>
+
+<input type="submit" value="Submit" onclick="SubmitFunction()">
+
+<label class="checkBoxButton">
+  <input type="checkbox" id="checkboxpermillion">Cases per Million population
+  <span class="checkmark1"></span>
+</label>
+
+<br><br><br>
+
+<label class="radioButton">
+  <input type="radio"  name="radio" id="newdeathsradio">
+  <span class="checkmark"></span>New Deaths
+</label>
+<label class="radioButton">
+  <input type="radio" name="radio" id="totaldeathsradio">
+  <span class="checkmark"></span>Total Deaths
+</label>
+<label class="radioButton">
+  <input type="radio" name="radio" id="newcasesradio">
+  <span class="checkmark"></span>New Cases
+</label>
+<label class="radioButton">
+  <input type="radio" checked="checked" name="radio" id="totalcasesradiol">
+  <span class="checkmark"></span>Total Cases
+</label>
+<label class="radioButton">
+  <input type="radio" name="radio" id="stringency_index">
+  <span class="checkmark"></span>Stringency Index
+</label>
+
+<div class="container" style="height:50%">
+    <canvas id="myChart1" style="width:10%;max-width:200%;"></canvas>
+</div>
+
+<div style="text-align:center;margin-top : 35%; background-color: lightblue; font-family: Tahoma, Trebuchet MS, sans-serif;">
+<h2 >Detailed Analysis on Covid-19</h2>
+</div>
+
+<div class="dropdown_3">
+  <select id="detailed_analysis">
+      <option value="">Select country</option>
+  </select>
+</div>
+
+<input type="submit" value="Submit" onclick="SubmitFunctionDetalied()" id="submit_analysis_button">
+
+<div class="container" style="height:50%">
+    <canvas id="myChart4" style="width:10%;max-width:500px"></canvas>
+</div>
+
+<div class="container" style="height:50%; width:100%;">
+    <canvas id="myChart5" style="max-width:500px"></canvas>
+    <div class="right" id="right1">
+        <p id="new_cases_trends_text"></p>
+    </div>
+</div>
+
+<div class="container" style="height:50%">
+    <canvas id="myChart6" style="width:10%;max-width:500px"></canvas>
+    <div class="right" id="right2">
+        <p id="new_deaths_trends_text"></p>
+    </div>
+</div>
+
+<div class="container" style="height:50%">
+    <canvas id="myChart7" style="width:10%;max-width:500px"></canvas>
+    <div class="right" id="right3">
+        <p id="new_vaccinations_trends_text"></p>
+    </div>
+</div>
+
+<script>
+var initial_chart=true;
+var chartvariable;
+var chart_label1;
+var chart_label2;
+var initial_graph_run=true;
+document.getElementById('right1').style.visibility = 'hidden';
+document.getElementById('right2').style.visibility = 'hidden';
+document.getElementById('right3').style.visibility = 'hidden';
+
+var getJSON = function(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      if (status === 200) {
+        callback(null, xhr.response);
+      } else {
+        callback(status, xhr.response);
+      }
+    };
+    xhr.send();
+};
+
+getJSON('/getcountries',
+function(err, data) {
+
+  function populate_dropdown(ID)
+{
+    var ele = document.getElementById(ID)
+    for (var i = 0; i<data.length;i++){
+
+    ele.innerHTML = ele.innerHTML + '<option value="' +data[i]['country_name'] + '">' + data[i]['country_name'] + '</option> ';}
+}
+populate_dropdown('country1');
+populate_dropdown('country2');
+populate_dropdown('detailed_analysis');
+});
+
+//Submit data function for detailed analysis of Covid-19
+function SubmitFunctionDetalied(){
+    var detailed_country_name = document.getElementById("detailed_analysis")
+    var detailed_country_name_output= detailed_country_name.options[detailed_country_name.selectedIndex].text;
+
+    $.ajax({
+        type: "GET",
+        url: '/total_deaths_linear_regression',
+        data: {
+            'country' : detailed_country_name_output,
+        },
+        success: function (data) {
+            // any process in data
+            detailed_analysis(data)
+        },
+        failure: function () {
+            alert("failure");
+        }
+    });
+    $.ajax({
+        type: "GET",
+        url: '/trends_data_analysis',
+        data: {
+            'country' : detailed_country_name_output,
+        },
+        success: function (data) {
+            // any process in data
+            trends_data_analysis(data)
+        },
+        failure: function () {
+            alert("failure");
+        }
+    });
+}
+
+//Submit data function when selected two countries
+function SubmitFunction(){
+    var select1 = document.getElementById("country1")
+    var select2 = document.getElementById("country2")
+    var output1= select1.options[select1.selectedIndex].text;
+    var output2= select2.options[select2.selectedIndex].text;
+
+    var checkbox1 = document.getElementById("checkboxpermillion");
+    if (checkbox1.checked==true){
+        var casespermillion=true
+    }
+
+    var radio1 = document.getElementById("totalcasesradiol");
+    var radio2 = document.getElementById("newcasesradio");
+    var radio3 = document.getElementById("totaldeathsradio");
+    var radio4 = document.getElementById("newdeathsradio");
+    var radio5 = document.getElementById("stringency_index");
+    if (radio1.checked == true){
+        chartvariable = "total_cases"
+        chart_label1=output1 +" "+ "Total Cases "
+        chart_label2=output2 +" "+ "Total Cases "
+    }
+    else if (radio2.checked == true){
+        chartvariable = "new_cases"
+        chart_label1=output1 +" "+ "New Cases"
+        chart_label2=output2 +" "+ "New Cases"
+    }
+    else if (radio3.checked == true){
+        chartvariable = "total_death"
+        chart_label1=output1 +" "+ "Total Deaths"
+        chart_label2=output2 +" "+ "Total Deaths"
+    }
+    else if (radio4.checked == true){
+        chartvariable = "new_death"
+        chart_label1=output1 +" "+ "New Deaths"
+        chart_label2=output2 +" "+ "New Deaths"
+    }
+    else if (radio5.checked == true){
+        chartvariable = "stringency_index"
+        chart_label1=output1 +" "+ "Stringency Index"
+        chart_label2=output2 +" "+ "Stringency Index"
+    }
+
+     $.ajax({
+        type: "GET",
+        url: '/getcompareddata',
+        data: {
+            'country1' : output1,
+            'country2' : output2,
+            'chartvariable' : chartvariable,
+            'casespermillion' : casespermillion
+        },
+        success: function (data) {
+            // any process in data
+
+            graphdisplay(data)
+        },
+        failure: function () {
+            alert("failure");
+        }
+    });
+}
+
+
+function graphdisplay(totaldata){
+    console.log(totaldata)
+    var fresh_chart=true;
+    j=1;
+    var newData = new Array();
+    var newLabel = new Array();
+
+    for ( var i=0; i<totaldata[j-1].length;i++){
+        newLabel[i]= totaldata[j-1][i]["date"];
+        newData[i]= totaldata[j-1][i]["total_cases"];
+    }
+
+    var newData1 = new Array();
+    var newLabel1 = new Array();
+    k=2;
+
+    for ( var l=0; l<totaldata[k-1].length;l++){
+        newLabel1[l]= totaldata[k-1][l]["date"];
+        newData1[l]= totaldata[k-1][l]["total_cases"];
+    }
+
+
+    let myChart1 = document.getElementById('myChart1').getContext('2d');
+    myChart1.canvas.width = 30;
+    myChart1.canvas.height = 10;
+    if(window.graph_display_data_1 != undefined)
+    window.graph_display_data_1.destroy();
+    window.graph_display_data_1 = new Chart(myChart1, {
+
+                type:'line',
+                data:{
+                    labels:newLabel,
+                    datasets:[{
+                        label:chart_label1,
+                        data: newData,
+                        borderWidth:1,
+                        borderColor: '#777',
+                        hoverBorderWidth:3,
+                        hoverBorderColor: '#000',
+                        lineTension: 0,
+                        pointRadius: 0,
+                        borderColor: "#8e5ea2",
+                        fill: false,
+                    },
+                    {
+                        label:chart_label2,
+                        data: newData1,
+                        borderWidth:1,
+                        borderColor: '#777',
+                        hoverBorderWidth:3,
+                        hoverBorderColor: '#000',
+                        lineTension: 0,
+                        pointRadius: 0,
+                        borderColor: "magenta",
+                        fill: false,
+                        }
+                    ]
+                },
+                options:{
+                    title:{
+                        display:true,
+                        text: 'Cases of covid-19',
+                        fontSize: 25
+                    },
+                    legend:{
+                        position:'right',
+                        labels:{
+                            fontColor:'#000'
+                        }
+                    }
+                }
+
+            });
+
+}
+
+
+
+/* Death Linear Regression Analysis */
+
+function detailed_analysis(total_deaths_data) {
+console.log("Inside",total_deaths_data)
+var ctx = document.getElementById("myChart4");
+if(window.myChart != undefined)
+window.myChart.destroy();
+window.myChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: total_deaths_data["date"],
+    datasets: [{
+      label: "Predicted",
+      type: "line",
+      borderColor: "#8e5ea2",
+      data: total_deaths_data["predicted"],
+      fill: false,
+      lineTension: 0,
+      pointRadius: 0,
+    }, {
+      label: "Actual",
+      type: "line",
+      borderColor: "magenta",
+      data: total_deaths_data["actual"],
+      fill: false,
+      lineTension: 0,
+      pointRadius: 0,
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Effect on total deaths after vaccinating 50% of the population'
+    },
+    legend: {
+      display: false
+    },
+    scales: {
+      xAxes: [{
+        ticks: {
+          // Include a dollar sign in the ticks
+          //callback: function(value, index, values) {
+
+            //if (label2[index] === undefined) {
+              //label2[index] = "no data ";
+            //}
+            //return "l2 " + label2[index] + ' $' + value;
+          //}
+        }
+      }]
+    }
+  }
+});
+}
+
+/* New Cases Trends display analysis */
+function trends_data_analysis(trends_data) {
+document.getElementById('right1').style.visibility = 'visible';
+document.getElementById('right2').style.visibility = 'visible';
+document.getElementById('right3').style.visibility = 'visible';
+if(trends_data["new_cases_trends"]["increase"] == "N/A"){
+document.getElementById('new_cases_trends_text').innerHTML= "Data is insufficient to generate trends."}
+else{
+document.getElementById('new_cases_trends_text').innerHTML="7-day Average: " + trends_data["new_cases_trends"]["7_days_average"]+"." +" " + "Yesterdays Cases: " + trends_data["new_cases_trends"]["yesterdays_data"]+"." +" " + "Yesterday's cases are " + trends_data["new_cases_trends"]["percentage_change_data"] + "% " + trends_data["new_cases_trends"]["increase"] + " than previous 7-day average."}
+let myChart5 = document.getElementById('myChart5').getContext('2d');
+    myChart5.canvas.width = 50;
+    myChart5.canvas.height = 30;
+    if(window.graph_display_data_2 != undefined)
+    window.graph_display_data_2.destroy();
+    window.graph_display_data_2 = new Chart(myChart5, {
+                type:'bar',
+                data:{
+                    labels:trends_data["date_7_days"],
+                    datasets:[{
+                        label: "7-day New Cases",
+                        data: trends_data["new_cases_trends"]["7_days_data"],
+                        borderWidth:1,
+                        borderColor: '#777',
+                        hoverBorderWidth:3,
+                        hoverBorderColor: '#000',
+                        lineTension: 0,
+                        pointRadius: 0,
+                    }]
+                },
+                options:{
+                    title:{
+                        display:true,
+                        text: 'New Cases Trends',
+                        fontSize: 25
+                    },
+                    legend:{
+                        position:'right',
+                        labels:{
+                            fontColor:'#000'
+                        }
+                    }
+                }
+
+            });
+
+/* New Deaths Trends display analysis */
+if(trends_data["new_deaths_trends"]["increase"] == "N/A"){
+document.getElementById('new_deaths_trends_text').innerHTML= "Data is insufficient to generate trends."}
+else{
+document.getElementById('new_deaths_trends_text').innerHTML="7-day Average: " + trends_data["new_deaths_trends"]["7_days_average"]+"." +" " + "Yesterdays Deaths: " + trends_data["new_deaths_trends"]["yesterdays_data"]+"." +" " + "Yesterday's deaths are " + trends_data["new_deaths_trends"]["percentage_change_data"] + "% " + trends_data["new_deaths_trends"]["increase"] + " than previous 7-day average."}
+let myChart6 = document.getElementById('myChart6').getContext('2d');
+    myChart6.canvas.width = 50;
+    myChart6.canvas.height = 30;
+    if(window.graph_display_data_3 != undefined)
+    window.graph_display_data_3.destroy();
+    window.graph_display_data_3 = new Chart(myChart6, {
+
+                type:'bar',
+                data:{
+                    labels:trends_data["date_7_days"],
+                    datasets:[{
+                        label: "7-day New Deaths",
+                        data: trends_data["new_deaths_trends"]["7_days_data"],
+                        borderWidth:1,
+                        borderColor: '#777',
+                        hoverBorderWidth:3,
+                        hoverBorderColor: '#000',
+                        lineTension: 0,
+                        pointRadius: 0,
+                    }]
+                },
+                options:{
+                    title:{
+                        display:true,
+                        text: 'New Deaths Trends',
+                        fontSize: 25
+                    },
+                    legend:{
+                        position:'right',
+                        labels:{
+                            fontColor:'#000'
+                        }
+                    }
+                }
+
+            });
+
+/* New Vaccinations Trends display analysis */
+if(trends_data["new_vaccinations_trends"]["increase"] == "N/A"){
+document.getElementById('new_vaccinations_trends_text').innerHTML= "Data is insufficient to generate trends."}
+else{
+document.getElementById('new_vaccinations_trends_text').innerHTML="7-day Average: " + trends_data["new_vaccinations_trends"]["7_days_average"]+"." +" " + "Yesterdays Vaccinations: " + trends_data["new_vaccinations_trends"]["yesterdays_data"] + "." +" " + "Yesterday's vaccinations are " + trends_data["new_vaccinations_trends"]["percentage_change_data"] + "% " + trends_data["new_vaccinations_trends"]["increase"] + " than previous 7-day average."}
+let myChart7 = document.getElementById('myChart7').getContext('2d');
+    myChart7.canvas.width = 50;
+    myChart7.canvas.height = 30;
+    if(window.graph_display_data_4 != undefined)
+    window.graph_display_data_4.destroy();
+    window.graph_display_data_4 = new Chart(myChart7, {
+                type:'bar',
+                data:{
+                    labels:trends_data["date_7_days"],
+                    datasets:[{
+                        label: "7-day New Vaccinations",
+                        data: trends_data["new_vaccinations_trends"]["7_days_data"],
+                        borderWidth:1,
+                        borderColor: '#777',
+                        hoverBorderWidth:3,
+                        hoverBorderColor: '#000',
+                        lineTension: 0,
+                        pointRadius: 0,
+                    }]
+                },
+                options:{
+                    title:{
+                        display:true,
+                        text: 'New Vaccinations Trends',
+                        fontSize: 25
+                    },
+                    legend:{
+                        position:'right',
+                        labels:{
+                            fontColor:'#000'
+                        }
+                    }
+                }
+
+            });
+
+}
+
+
+
+/* const data = () =>  fetch("/getcountries")
+  .then( res => res.json())
+  .then(({out}) => out); */
+
+
+/* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+
+</script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,165 @@
+body {font-family: "Lato", sans-serif;}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+.main {
+  margin-left: 160px; /* Same as the width of the sidenav */
+  padding: 0px 10px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidebar {padding-top: 15px;}
+  .sidebar a {font-size: 18px;}
+}
+
+.dropbtn {
+  background-color: #3498DB;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #2980B9;
+}
+
+.dropdown1 {
+  margin-left : 30%;
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown {
+  margin-left : 5%;
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown a:hover {background-color: #ddd;}
+
+.show {display: block;}
+
+#myChart1 { float: left;
+  display: inline-block;}
+
+.radioButton{
+    float:right;
+    margin-right : 8%;
+    padding: 12px 16px;
+    text-align: center;
+}
+
+#detailed_analysis{
+    margin-top: 33%;
+    margin-left : 100%;
+  position: relative;
+  display: inline-block;
+}
+
+#submit_analysis_button{
+    margin-top: 5%;
+    margin-right : 35%;
+    float:right;
+  position: relative;
+}
+
+.right {
+  width:500px;
+  border: 3px solid grey;
+  padding: 10px;
+  margin-top: 10%;
+  box-shadow: 5px 10px 10px 10px #888888;
+}
+
+body  {
+  background-color: GhostWhite;
+}
+
+#myChart5 {
+    float:left;
+    width:50%;
+}
+#myChart6 {
+float:left;
+    width:50%;
+}
+#myChart7 {
+float:left;
+    width:50%;
+}
+
+
+
+#right1 {
+    float:right;
+    margin-bottom:20%;
+
+}
+
+#right2 {
+    float:right;
+    margin-bottom:20%;
+    margin-top: 1%;
+}
+
+#right3 {
+    float:right;
+    margin-bottom:30%;
+    margin-top: 1%;
+}
+
+#map{
+    height:500px;
+    width:100%;
+}
+
+.dropdown_3{
+margin-top: 0%;
+margin-left : 20%;
+
+  display: inline-block;
+}
